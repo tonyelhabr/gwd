@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "gwd"
+name = "test"
 version = "0.1.0"
 description = ""
 authors = ["Tony ElHabr <anthonyelhabr@gmail.com>"]
