@@ -3,3 +3,13 @@
 # GeeksWhoDrink API
 
 [GeeksWhoDrink API]() is a FastAPI for serving [GeeksWhoDrink](https://www.geekswhodrink.com/) pub trivia quiz results.
+
+## Getting Started
+
+```bash
+poetry install
+```
+
+```bash
+poetry run uvicorn db.main:app
+```
