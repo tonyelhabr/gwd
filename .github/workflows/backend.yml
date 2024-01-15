@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - add-black-gha
     paths:
       - backend/**
       - .github/**
