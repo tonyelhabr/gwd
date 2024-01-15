@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from db import models, schemas
+from . import models, schemas
 
 
 def get_venue(db: Session, venue_id: int):
