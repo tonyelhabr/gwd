@@ -11,5 +11,7 @@ poetry install
 ```
 
 ```bash
-poetry run uvicorn db.main:app
+cd backend && poetry run uvicorn gwd.main:app
 ```
+
+Then navigate to `http://127.0.0.1:8000/docs#/operation` in your browser.
