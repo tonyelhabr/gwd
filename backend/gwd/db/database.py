@@ -2,7 +2,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./gwd.db"
+# SQLALCHEMY_DATABASE_URL = "sqlite:///./gwd.db"
+SQLALCHEMY_DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/gwd"
 
 # engine = create_engine(SQLALCHEMY_DATABASE_URL) ## for postgres
 engine = create_engine(
