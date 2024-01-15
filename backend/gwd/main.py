@@ -1,10 +1,10 @@
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 
-from gwd.crud import venues as v
-from gwd.crud import results as r
-from gwd.db import models, schemas
-from gwd.db.database import SessionLocal, engine
+from .crud import venues as v
+from .crud import results as r
+from .db import models, schemas
+from .db.database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 
