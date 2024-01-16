@@ -1,6 +1,6 @@
-FROM python:3.11-slim
+FROM python:3.11-slim as requirements-stage
 
-COPY . .
+WORKDIR /tmp
 
 # This prevents Python from writing out pyc files
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -8,14 +8,21 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1 
 ENV POETRY_VERSION=1.5.0
 
-RUN apt-get update \
-    && apt-get install -y wget gnupg2 curl \
-    && rm -rf /var/lib/apt/lists/*
-    
-RUN pip install poetry==${POETRY_VERSION} && \
-    poetry config virtualenvs.path --unset && \
-    poetry config virtualenvs.in-project true && \
-    poetry install --no-root --no-dev
+RUN pip install poetry==${POETRY_VERSION}
+
+COPY ./pyproject.toml ./poetry.lock* /tmp/
+
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
+
+FROM python:3.11-slim
+
+WORKDIR /code
+
+COPY --from=requirements-stage /tmp/requirements.txt /code/requirements.txt
+
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+
+COPY . /code
 
 EXPOSE 8000
 
