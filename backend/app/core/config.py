@@ -1,4 +1,4 @@
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from pydantic import PostgresDsn, field_validator, ValidationInfo, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
-    SQLALCHEMY_DATABASE_URI: str = Field(default=None)
+    SQLALCHEMY_DATABASE_URI: str = Field(default=None)  # type: ignore
 
     ## https://stackoverflow.com/questions/77134535/migrate-postgresdsn-build-from-pydentic-v1-to-pydantic-v2
     @field_validator("SQLALCHEMY_DATABASE_URI", mode="before")
