@@ -4,14 +4,21 @@
 
 [GeeksWhoDrink API]() is a FastAPI for serving [GeeksWhoDrink](https://www.geekswhodrink.com/) pub trivia quiz results.
 
-## Getting Started
+## Stack
 
-```bash
-poetry install
-```
+There are a lot of tools in the stack used in this app, so I'll enumerate them here to the extent possible.
 
-```bash
-cd backend && poetry run uvicorn gwd.main:app
-```
+Core:
 
-Then navigate to `http://127.0.0.1:8000/docs#/operation` in your browser.
+- [FastAPI](https://fastapi.tiangolo.com/) (Python)
+- [Postgres](https://www.postgresql.org/)
+- [Docker](https://www.docker.com/)
+
+SaaS:
+
+- [GitHub Actions](https://github.com/actions)
+
+PaaS:
+
+- TODO
+
