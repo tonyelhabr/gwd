@@ -1,4 +1,4 @@
-FROM python:3.11-slim-bullseye
+FROM python:3.11-slim
 
 COPY . .
 
@@ -12,8 +12,6 @@ RUN apt-get update \
     && apt-get install -y wget gnupg2 curl \
     && rm -rf /var/lib/apt/lists/*
     
-RUN apt-get install -y gcc
-
 RUN pip install poetry==${POETRY_VERSION} && \
     poetry config virtualenvs.path --unset && \
     poetry config virtualenvs.in-project true && \
