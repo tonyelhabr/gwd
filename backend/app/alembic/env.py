@@ -2,6 +2,9 @@ from logging.config import fileConfig
 from alembic import context
 from app.db.database import engine
 
+# Import all the models, so that Base has them before being imported by Alembic
+from app.db.models import Venue, Result  # noqa
+
 ## relative file imports don't seem to work
 from app.db.database import Base
 from app.core.config import settings
