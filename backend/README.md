@@ -2,9 +2,30 @@
 
 ## Getting Started
 
+### Quick start
+
+From the `/backend/` folder, run
+
 ```bash
-cd backend
-./scripts/starts.sh
+poetry run alembic upgrade head && poetry run uvicorn app.main:app
 ```
 
 Then navigate to `http://127.0.0.1:8000/docs#/operation` in your browser.
+
+### Docker approach
+
+A more full-proof approach would be to use the docker-compose file.
+
+```bash
+docker-compose up --build
+```
+
+As before, navigate to `http://127.0.0.1:8000/docs#/operation` in your browser.
+
+Note that, in the `Dockerfile` for the backend, we end up converting the poetry lock file to a more traditional pip requirements file. This has speed benefits, but means that we can't assume a poetry shell for Bash scripts.
+
+Don't forget to terminate the Docker services!
+
+```bash
+docker-compose down
+```
