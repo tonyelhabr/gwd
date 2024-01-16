@@ -9,6 +9,9 @@ services:
       - db
     env_file:
       - .env
+    environment:
+      ## for running interactively, localhost is used. but the Docker image needs something other than localhost
+      - POSTGRES_HOST=db
 
   db:
     image: postgres:15
