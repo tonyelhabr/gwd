@@ -1,7 +1,8 @@
 from logging.config import fileConfig
 from alembic import context
-from sqlalchemy import engine_from_config, pool
+from app.db.database import engine
 
+## relative file imports don't seem to work
 from app.db.database import Base
 from app.core.config import settings
 
@@ -60,7 +61,6 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    from app.db.database import engine
 
     with engine.connect() as connection:
         context.configure(connection=connection, target_metadata=target_metadata)
