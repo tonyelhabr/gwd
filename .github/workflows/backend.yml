@@ -24,3 +24,8 @@ jobs:
     with:
       customName: 'MyPy'
       customCommand: 'mypy .'
+  ruff:
+    uses: ./.github/workflows/reusable-poetry-setup.yml
+    with:
+      customName: 'Ruff'
+      customCommand: 'ruff check .'
