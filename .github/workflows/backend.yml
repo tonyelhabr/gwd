@@ -29,3 +29,18 @@ jobs:
     with:
       customName: 'Ruff'
       customCommand: 'ruff check .'
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check OpenSSL version
+        run: openssl version
+      - name: Decrypt .env file
+        run: |
+          openssl aes-256-cbc -d -a -in .env.enc -out .env -pass env:OPENSSL_PASSKEY
+          echo "Decryption successful"
+        env:
+          OPENSSL_PASSKEY: ${{ secrets.OPENSSL_PASSKEY }}
