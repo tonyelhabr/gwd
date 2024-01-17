@@ -1,12 +1,8 @@
 #! /bin/bash
 
-# Let the DB start
 python /app/backend_pre_start.py
-
-# Run migrations
+echo 'before alembic'
 alembic upgrade head
-
-# Create initial data in DB
+# uvicorn app.main:app --host "0.0.0.0"
+echo 'after alembic'
 python /app/initial_data.py
-
-uvicorn app.main:app --host "0.0.0.0"

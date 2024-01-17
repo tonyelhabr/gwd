@@ -29,3 +29,15 @@ Don't forget to terminate the Docker services!
 ```bash
 docker-compose down
 ```
+
+If you were using sqlite, you could also build the Dockerfile with just
+
+```
+docker build -t backend .
+```
+
+and run it with
+
+```
+docker run -p 8000:8000
+```
