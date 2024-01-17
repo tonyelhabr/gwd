@@ -5,6 +5,13 @@ from ..crud import venues as v
 from ..db import schemas
 from ..db.database import get_db
 
+
+import logging
+from ..extensions.logger import LOGGER_NAME
+
+logger = logging.getLogger(LOGGER_NAME)
+
+
 router = APIRouter()
 
 
@@ -27,4 +34,6 @@ def read_venue(venue_id: int, db: Session = Depends(get_db)):
     db_venue = v.get_venue(db, venue_id=venue_id)
     if db_venue is None:
         raise HTTPException(status_code=404, detail="Venue name not found.")
+
+    logger.info(f"Retrieved venue {db_venue.venue_id}.")
     return db_venue
