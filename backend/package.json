@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@tka85/dotenvenc": "^5.1.1"
+  }
+}

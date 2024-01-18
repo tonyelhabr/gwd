@@ -1,4 +1,5 @@
-## Run with powershell ./scripts/lint.ps1
+#! /bin/bash
+
 echo "Running Black ..."
 poetry run black . 
 

@@ -1,1 +1,2 @@
-scripts/lint.ps1
+scripts/lint.sh
+*.readable
