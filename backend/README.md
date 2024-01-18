@@ -41,3 +41,7 @@ and run it with
 ```
 docker run -p 8000:8000
 ```
+
+## Gotchas
+
+When editing Bash scripts, make sure the line endings are Linux-compatible. (Use Notepad++ if you're on Windows!)
