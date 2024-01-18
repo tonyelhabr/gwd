@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from ..db import models, schemas
+from app.db import models, schemas
 
 
 def get_results(db: Session, skip: int = 0, limit: int = 100):

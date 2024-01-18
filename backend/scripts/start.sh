@@ -1,4 +1,6 @@
 #! /bin/bash
 
-alembic upgrade head && \
-  uvicorn app.main:app --host "0.0.0.0"
+python -m app.backend_pre_start
+alembic upgrade head
+python -m app.initial_data
+uvicorn app.main:app --host "0.0.0.0"
