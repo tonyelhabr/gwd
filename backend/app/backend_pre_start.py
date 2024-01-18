@@ -1,7 +1,7 @@
 import logging
-from .extensions.logger import LOGGER_NAME
+from app.extensions.logger import LOGGER_NAME
 
-from .db.database import SessionLocal
+from app.db.database import SessionLocal
 
 logger = logging.getLogger(LOGGER_NAME)
 

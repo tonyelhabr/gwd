@@ -1,17 +1,17 @@
 import logging
-from .extensions.logger import LOGGER_NAME
+# from app.extensions.logger import LOGGER_NAME
 
-from .db.database import SessionLocal
+from app.db.database import SessionLocal
 
 from sqlalchemy.orm import Session
 
-from .crud import venues as v
-from .db import schemas
+from app.crud import venues as v
+from app.db import schemas
 
-# from .db.database import Base  # noqa: F401
+# from app.db.database import Base  # noqa: F401
 
 
-logger = logging.getLogger(LOGGER_NAME)
+logger = logging.getLogger(__name__)
 
 
 # make sure all SQL Alchemy models are imported (app.db.base) before initializing DB

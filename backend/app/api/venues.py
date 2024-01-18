@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from ..crud import venues as v
-from ..db import schemas
-from ..db.database import get_db
+from app.crud import venues as v
+from app.db import schemas
+from app.db.database import get_db
 
 
 import logging
-from ..extensions.logger import LOGGER_NAME
+from app.extensions.logger import LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
 

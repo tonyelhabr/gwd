@@ -1,13 +1,13 @@
 from fastapi import FastAPI
 
-from .api import venues, results
+from app.api import venues, results
 
-from .db import models
-from .db.database import engine
+from app.db import models
+from app.db.database import engine
 
 import logging
 from logging.config import dictConfig
-from .extensions.logger import LogConfig, LOGGER_NAME
+from app.extensions.logger import LogConfig, LOGGER_NAME
 
 dictConfig(LogConfig().model_dump())
 
