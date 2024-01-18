@@ -1,4 +1,5 @@
 import logging
+from sqlalchemy import text
 from app.extensions.logger import LOGGER_NAME
 
 from app.db.database import SessionLocal
@@ -10,7 +11,7 @@ def init() -> None:
     try:
         db = SessionLocal()
         # Try to create session to check if DB is awake
-        db.execute("SELECT 1")
+        db.execute(text("SELECT 1"))
     except Exception as e:
         logger.error(e)
         raise e

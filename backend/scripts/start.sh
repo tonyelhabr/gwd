@@ -1,8 +1,6 @@
 #! /bin/bash
 
-python /app/backend_pre_start.py
-echo 'before alembic'
+python -m app.backend_pre_start
 alembic upgrade head
-# uvicorn app.main:app --host "0.0.0.0"
-echo 'after alembic'
-python /app/initial_data.py
+python -m app.initial_data
+uvicorn app.main:app --host "0.0.0.0"
