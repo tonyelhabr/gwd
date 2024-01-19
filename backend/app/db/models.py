@@ -1,13 +1,24 @@
 from app.db.database import Base
-from sqlalchemy import ForeignKey, Integer, String
+from sqlalchemy import ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import Mapped, relationship, mapped_column
+from datetime import datetime
 
 
 class Venue(Base):
     __tablename__ = "venues"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    source_id: Mapped[str] = mapped_column(String)
     name: Mapped[str] = mapped_column(String)
+    url = Mapped[str] = mapped_column(String)
+    lat = Mapped[str] = mapped_column(String)
+    lon = Mapped[str] = mapped_column(String)
+    address = Mapped[str] = mapped_column(String)
+    created_at = Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at = Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
+
     results = relationship("Result", back_populates="venue")
 
     def __repr__(self):

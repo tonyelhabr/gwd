@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from datetime import datetime
 
 
 class ResultBase(BaseModel):
@@ -28,6 +29,13 @@ class VenueCreate(VenueBase):
 
 class Venue(VenueBase):
     id: int
+    source_id: str
+    url: str
+    lat: str
+    lon: str
+    address: str
+    created_at: datetime = None
+    updated_at: datetime = None
     results: list[Result] = []
 
     class Config:
