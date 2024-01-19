@@ -1,18 +1,15 @@
 import logging
+from app.extensions.logger import LOGGER_NAME
 
-# from app.extensions.logger import LOGGER_NAME
-
-from app.db.database import SessionLocal
-
+from app.db.database import SessionLocal, engine
 from sqlalchemy.orm import Session
 
 from app.crud import venues as v
 from app.db import schemas
 
-# from app.db.database import Base  # noqa: F401
+from app.db.database import Base  # noqa: F401
 
-
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(LOGGER_NAME)
 
 
 # make sure all SQL Alchemy models are imported (app.db.base) before initializing DB
@@ -21,22 +18,19 @@ logger = logging.getLogger(__name__)
 
 
 def init_db(db: Session) -> None:
-    # Tables should be created with Alembic migrations
-    # But if you don't want to use migrations, create
-    # the tables un-commenting the next line
-    # Base.metadata.create_all(bind=engine)
-
-    # venue = v.get_venue_by_name(db, name="foo")
-    # if not venue:
-    #     venue_to_create = schemas.VenueCreate(
-    #         name="foo",
-    #         source_id="123",
-    #         url="https://foo.com",
-    #         lat=30.266666,
-    #         lon=-97.733330,
-    #         address="123 Main St. Austin TX",
-    #     )
-    #     venue = v.create_venue(db, venue=venue_to_create)
+    Base.metadata.create_all(bind=engine)
+    logger.info("Creating initial data")
+    existing_venue = v.get_venue(db, source_id="source_id")
+    if not existing_venue:
+        venue_to_create = schemas.VenueCreate(
+            source_id="x123",
+            name="foo",
+            url="https://foo.com",
+            lat=30.266666,
+            lon=-97.733330,
+            address="123 Main St. Austin TX",
+        )
+        v.create_venue(db, venue=venue_to_create)
 
 
 def init() -> None:

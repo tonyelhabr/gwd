@@ -17,16 +17,16 @@ router = APIRouter()
 
 @router.post("/api/venues/", response_model=schemas.Venue)
 def create_venue(venue: schemas.VenueCreate, db: Session = Depends(get_db)):
-    # TODO: Just use get_venue here
-    db_venue = v.get_venue_by_name(db, name=venue.name)
+    db_venue = v.get_venue(db, source_id=venue.source_id)
     if db_venue:
-        raise HTTPException(status_code=400, detail="Venue name already used.")
+        raise HTTPException(status_code=400, detail=f"Venue source ID '{venue.source_id}' already used.")
     return v.create_venue(db=db, venue=venue)
 
 
 @router.get("/api/venues/", response_model=list[schemas.Venue])
 def read_venues(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     venues = v.get_venues(db=db, skip=skip, limit=limit)
+    logger.info(f"Found {len(venues)} venues.")
     return venues
 
 
@@ -34,20 +34,21 @@ def read_venues(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 def read_venue(source_id: str, db: Session = Depends(get_db)):
     db_venue = v.get_venue(db, source_id=source_id)
     if db_venue is None:
-        raise HTTPException(status_code=404, detail="Venue name not found.")
+        raise HTTPException(status_code=404, detail=f"Venue source ID '{source_id}' not found.")
 
     logger.info(f"Retrieved venue {db_venue.source_id}.")
     return db_venue
 
 
 # TODO
-# @router.get("/api/venues/lookup/{name}", response_model=schemas.Venue)
-# def read_venue_by_name(venue_id: int, db: Session = Depends(get_db)):
-#     db_venue = v.get_venue_by_name(db, venue_id=venue_id)
-#     if db_venue is None:
-#         raise HTTPException(status_code=404, detail="Venue name not found.")
-#     logger.info(f"Retrieved venue {db_venue.name}.")
-#     return db_venue
+@router.get("/api/venues/lookup/{name}", response_model=schemas.Venue)
+def read_venue_by_name(name: str, db: Session = Depends(get_db)):
+    logger.info(f"Getting a venue by name: {name}.")
+    db_venue = v.get_venue_by_name(db, name=name)
+    if db_venue is None:
+        raise HTTPException(status_code=404, detail=f"Venue name '{name}' not found.")
+    logger.info(f"Retrieved the venue with name '{db_venue.name}' (source ID: '{db_venue.source_id}').")
+    return db_venue
 
 
 # TODO: Add authentication

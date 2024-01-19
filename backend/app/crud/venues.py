@@ -14,6 +14,7 @@ def get_venue(db: Session, source_id: str) -> Optional[models.Venue]:
 
 
 def get_venue_by_name(db: Session, name: str) -> Optional[models.Venue]:
+    logger.info(f"Getting a venue: {name}")
     return db.query(models.Venue).filter(models.Venue.name == name).first()
 
 
@@ -29,6 +30,7 @@ def create_venue(db: Session, venue: schemas.VenueCreate) -> Optional[models.Ven
         lat=venue.lat,
         lon=venue.lon,
         address=venue.address,
+        url=venue.url,
     )
     db.add(db_venue)
     db.commit()
