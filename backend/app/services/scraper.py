@@ -54,13 +54,9 @@ class ScrapingService:
 
     def _extract_venues_data(self):
         logger.info("Waiting for all venues to load on the source page.")
-        WebDriverWait(self.driver, 7).until(
-            EC.presence_of_element_located(
-                (By.CLASS_NAME, "find__col find__col--list")
-            )
-        )
-        logger.info("All venues have loaded on the source page.")
+        WebDriverWait(self.driver, 3).until(lambda driver: True)
         soup = BeautifulSoup(self.driver.page_source, "html.parser")
+        logger.info("All venues have loaded on the source page.")
         results = soup.find_all("div", class_="find__col find__col--list")
         data = []
         for result in results:
