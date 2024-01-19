@@ -27,11 +27,14 @@ class VenueBase(BaseModel):
     lon: float
     address: str
 
+
 class VenueCreate(VenueBase):
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
+
 class VenueUpdate(VenueBase):
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+
 
 class Venue(VenueBase):
     id: int

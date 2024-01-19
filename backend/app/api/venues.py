@@ -39,6 +39,7 @@ def read_venue(source_id: int, db: Session = Depends(get_db)):
     logger.info(f"Retrieved venue {db_venue.source_id}.")
     return db_venue
 
+
 # TODO
 # @router.get("/api/venues/lookup/{name}", response_model=schemas.Venue)
 # def read_venue_by_name(venue_id: int, db: Session = Depends(get_db)):
@@ -47,6 +48,7 @@ def read_venue(source_id: int, db: Session = Depends(get_db)):
 #         raise HTTPException(status_code=404, detail="Venue name not found.")
 #     logger.info(f"Retrieved venue {db_venue.name}.")
 #     return db_venue
+
 
 # TODO: Add authentication
 @router.post("/api/scraping/test/venues")
@@ -63,4 +65,3 @@ def test_scraping_venues(db: Session = Depends(get_db)):
         else:
             venue_data = schemas.VenueUpdate(**scraped_venue)
             v.update_venue(db, venue_data)
-

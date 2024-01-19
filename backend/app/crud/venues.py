@@ -8,6 +8,7 @@ from app.extensions.logger import LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
 
+
 def get_venue(db: Session, source_id: str) -> Optional[models.Venue]:
     return db.query(models.Venue).filter(models.Venue.source_id == source_id).first()
 
@@ -34,11 +35,11 @@ def update_venue(db: Session, venue: schemas.VenueUpdate) -> Optional[models.Ven
     )
     if not db_venue:
         return None
-    
+
     # Update existing venue
     for key, value in venue.dict().items():
         setattr(db_venue, key, value) if value else None
-        
+
     # TODO: probably ok to remove this since we update it with `onupdate` in the model.
     db_venue.updated_at = datetime.utcnow()
 
