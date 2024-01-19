@@ -7,6 +7,7 @@ from app.db.database import get_db
 
 router = APIRouter()
 
+
 # TODO: Add authentication
 @router.post("/api/venues/{venue_id}/results/", response_model=schemas.Result)
 def create_results_for_venue(
