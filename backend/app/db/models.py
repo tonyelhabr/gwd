@@ -10,12 +10,12 @@ class Venue(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     source_id: Mapped[str] = mapped_column(String)
     name: Mapped[str] = mapped_column(String)
-    url = Mapped[str] = mapped_column(String)
-    lat = Mapped[str] = mapped_column(String)
-    lon = Mapped[str] = mapped_column(String)
-    address = Mapped[str] = mapped_column(String)
-    created_at = Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at = Mapped[datetime] = mapped_column(
+    url: Mapped[str] = mapped_column(String)
+    lat: Mapped[str] = mapped_column(String)
+    lon: Mapped[str] = mapped_column(String)
+    address: Mapped[str] = mapped_column(String)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
     )
 
