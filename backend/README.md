@@ -30,6 +30,14 @@ Don't forget to terminate the Docker services!
 docker-compose down
 ```
 
+And if you want to remove the postgres volume (to prevent data from persisteng across lifecycles of a container), you can run
+
+```bash
+docker-compose down -v
+```
+
+#### SQLite
+
 If you were using sqlite, you could also build the Dockerfile with just
 
 ```
