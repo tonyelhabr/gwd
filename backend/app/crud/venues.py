@@ -22,6 +22,7 @@ def get_venues(db: Session, skip: int = 0, limit: int = 100) -> list[models.Venu
 
 
 def create_venue(db: Session, venue: schemas.VenueCreate) -> Optional[models.Venue]:
+    logger.info(f"Creating a new venue: {venue}")
     db_venue = models.Venue(
         source_id=venue.source_id,
         name=venue.name,
