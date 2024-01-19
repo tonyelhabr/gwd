@@ -36,8 +36,6 @@ def init_db(db: Session) -> None:
             url="https://foo.com",
             lat=30.266666,
             lon=-97.733330,
-            created_at=datetime.datetime.utcnow,
-            updated_at=datetime.datetime.utcnow,
             address="123 Main St. Austin TX",
         )
         venue = v.create_venue(db, venue=venue_to_create)
