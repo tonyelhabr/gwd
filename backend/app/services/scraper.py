@@ -11,7 +11,7 @@ import sys
 
 class ScrapingService:
     def __init__(self):
-        self.base_url = "https://www.geekswhodrink.com"
+        self.base_url = "www.geekswhodrink.com"
         self.driver = self.create_driver()
 
     def _set_chrome_options(self):
