@@ -28,12 +28,12 @@ class VenueBase(BaseModel):
     address: str
 
 
-class VenueCreate(VenueBase):
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-
-
 class VenueUpdate(VenueBase):
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class VenueCreate(VenueUpdate):
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
 
 class Venue(VenueBase):

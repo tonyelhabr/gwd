@@ -31,7 +31,7 @@ def read_venues(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
 
 @router.get("/api/venues/{source_id}", response_model=schemas.Venue)
-def read_venue(source_id: int, db: Session = Depends(get_db)):
+def read_venue(source_id: str, db: Session = Depends(get_db)):
     db_venue = v.get_venue(db, source_id=source_id)
     if db_venue is None:
         raise HTTPException(status_code=404, detail="Venue name not found.")
@@ -60,8 +60,8 @@ def test_scraping_venues(db: Session = Depends(get_db)):
     for scraped_venue in scraped_venues:
         existing_venue = v.get_venue(db, source_id=scraped_venue.source_id)
         if not existing_venue:
-            venue_data = schemas.VenueCreate(**scraped_venue)
-            v.create_venue(db, venue_data)
+            venue_to_create = schemas.VenueCreate(**scraped_venue)
+            v.create_venue(db, venue_to_create)
         else:
-            venue_data = schemas.VenueUpdate(**scraped_venue)
-            v.update_venue(db, venue_data)
+            venue_to_update = schemas.VenueUpdate(**scraped_venue)
+            v.update_venue(db, venue_to_update)
