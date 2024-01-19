@@ -26,17 +26,17 @@ def init_db(db: Session) -> None:
     # the tables un-commenting the next line
     # Base.metadata.create_all(bind=engine)
 
-    venue = v.get_venue_by_name(db, name="foo")
-    if not venue:
-        venue_to_create = schemas.VenueCreate(
-            name="foo",
-            source_id="123",
-            url="https://foo.com",
-            lat=30.266666,
-            lon=-97.733330,
-            address="123 Main St. Austin TX",
-        )
-        venue = v.create_venue(db, venue=venue_to_create)
+    # venue = v.get_venue_by_name(db, name="foo")
+    # if not venue:
+    #     venue_to_create = schemas.VenueCreate(
+    #         name="foo",
+    #         source_id="123",
+    #         url="https://foo.com",
+    #         lat=30.266666,
+    #         lon=-97.733330,
+    #         address="123 Main St. Austin TX",
+    #     )
+    #     venue = v.create_venue(db, venue=venue_to_create)
 
 
 def init() -> None:
