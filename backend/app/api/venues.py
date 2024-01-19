@@ -9,6 +9,8 @@ from app.services.scraper import ScrapingService
 import logging
 from app.extensions.logger import LOGGER_NAME
 
+import asyncio
+
 logger = logging.getLogger(LOGGER_NAME)
 
 
@@ -56,11 +58,14 @@ def test_scraping_venues(db: Session = Depends(get_db)):
     logger.info("Starting to scrape venues.")
     scraped_venues = ss.scrape_venues()
     logger.info("Finished scraping venues.")
+    logger.info(f"Found {len(scraped_venues)} venues.")
     for scraped_venue in scraped_venues:
         existing_venue = v.get_venue(db, source_id=scraped_venue.source_id)
         if not existing_venue:
+            logger.info(f"Venue {scraped_venue.source_id} does not exist in the DB, so creating it.")
             venue_to_create = schemas.VenueCreate(**scraped_venue)
             v.create_venue(db, venue_to_create)
         else:
+            logger.info(f"Venue {scraped_venue.source_id} exists in the DB, so updating it.")
             venue_to_update = schemas.VenueUpdate(**scraped_venue)
             v.update_venue(db, venue_to_update)

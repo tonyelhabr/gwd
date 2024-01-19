@@ -20,10 +20,12 @@ logger = logging.getLogger(LOGGER_NAME)
 def init_db(db: Session) -> None:
     Base.metadata.create_all(bind=engine)
     logger.info("Creating initial data")
-    existing_venue = v.get_venue(db, source_id="source_id")
+    init_source_id = "x123"
+    existing_venue = v.get_venue(db, source_id=init_source_id)
     if not existing_venue:
+        logger.info(f"Venue {existing_venue} does not exist in the DB, so creating it.")
         venue_to_create = schemas.VenueCreate(
-            source_id="x123",
+            source_id=init_source_id,
             name="foo",
             url="https://foo.com",
             lat=30.266666,
