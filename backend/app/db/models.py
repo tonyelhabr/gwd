@@ -1,5 +1,5 @@
 from app.db.database import Base
-from sqlalchemy import ForeignKey, Integer, String, DateTime
+from sqlalchemy import ForeignKey, Integer, String, DateTime, Float
 from sqlalchemy.orm import Mapped, relationship, mapped_column
 from datetime import datetime
 
@@ -11,8 +11,8 @@ class Venue(Base):
     source_id: Mapped[str] = mapped_column(String)
     name: Mapped[str] = mapped_column(String)
     url: Mapped[str] = mapped_column(String)
-    lat: Mapped[str] = mapped_column(String)
-    lon: Mapped[str] = mapped_column(String)
+    lat: Mapped[float] = mapped_column(Float)
+    lon: Mapped[float] = mapped_column(Float)
     address: Mapped[str] = mapped_column(String)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(

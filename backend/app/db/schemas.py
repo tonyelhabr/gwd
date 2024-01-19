@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime
 
 
@@ -23,19 +23,20 @@ class VenueBase(BaseModel):
     source_id: str
     name: str
     url: str
-    lat: str
-    lon: str
+    lat: float
+    lon: float
     address: str
-    created_at: datetime
-    updated_at: datetime
-
 
 class VenueCreate(VenueBase):
-    pass
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
+class VenueUpdate(VenueBase):
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 class Venue(VenueBase):
     id: int
+    created_at: datetime
+    updated_at: datetime
     results: list[Result] = []
 
     class Config:
