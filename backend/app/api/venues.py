@@ -14,7 +14,7 @@ logger = logging.getLogger(LOGGER_NAME)
 
 router = APIRouter()
 
-
+# TODO: Add authentication
 @router.post("/api/venues/", response_model=schemas.Venue)
 def create_venue(venue: schemas.VenueCreate, db: Session = Depends(get_db)):
     db_venue = v.get_venue(db, source_id=venue.source_id)
@@ -40,7 +40,6 @@ def read_venue(source_id: str, db: Session = Depends(get_db)):
     return db_venue
 
 
-# TODO
 @router.get("/api/venues/lookup/{name}", response_model=schemas.Venue)
 def read_venue_by_name(name: str, db: Session = Depends(get_db)):
     logger.info(f"Getting a venue by name: {name}.")
@@ -49,7 +48,6 @@ def read_venue_by_name(name: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail=f"Venue name '{name}' not found.")
     logger.info(f"Retrieved the venue with name '{db_venue.name}' (source ID: '{db_venue.source_id}').")
     return db_venue
-
 
 # TODO: Add authentication
 @router.post("/api/scraping/test/venues")

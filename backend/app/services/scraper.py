@@ -5,8 +5,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from urllib.parse import urlencode, urlunparse
-import time
-import sys
+import logging
+from app.extensions.logger import LOGGER_NAME
+
+logger = logging.getLogger(LOGGER_NAME)
 
 
 class ScrapingService:
@@ -18,6 +20,8 @@ class ScrapingService:
         chrome_options = webdriver.ChromeOptions()
         options = [
             "--headless",
+            "--no-sandbox",
+            "--disable-dev-shm-usage"
         ]
         for option in options:
             chrome_options.add_argument(option)
@@ -44,12 +48,18 @@ class ScrapingService:
             )
             popup_button.click()
         except NoSuchElementException:
-            print("Popup button not found.")
+            logger.error("Popup button not found. Exiting early.")
             self.driver.quit()
-            sys.exit("Exiting the script early and not updating venues.csv.")
+            raise Exception("Popup button not found")
 
     def _extract_venues_data(self):
-        time.sleep(5)
+        logger.info("Waiting for all venues to load on the source page.")
+        WebDriverWait(self.driver, 7).until(
+            EC.presence_of_element_located(
+                (By.CLASS_NAME, "find__col find__col--list")
+            )
+        )
+        logger.info("All venues have loaded on the source page.")
         soup = BeautifulSoup(self.driver.page_source, "html.parser")
         results = soup.find_all("div", class_="find__col find__col--list")
         data = []
