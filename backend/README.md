@@ -36,9 +36,7 @@ And if you want to remove the postgres volume (to prevent data from persisteng a
 docker-compose down -v
 ```
 
-#### SQLite
-
-If you were using sqlite, you could also build the Dockerfile with just
+If you were using sqlite or just wanted to debug something, you could also build the Dockerfile with just
 
 ```
 docker build -t backend .
@@ -48,6 +46,12 @@ and run it with
 
 ```
 docker run -p 8000:8000
+```
+
+or interactively with
+
+```
+docker run -it --entrypoint bash backend
 ```
 
 ## Gotchas
