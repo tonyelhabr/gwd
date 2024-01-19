@@ -67,7 +67,6 @@ def test_scraping_venues(db: Session = Depends(get_db)):
     logger.info("Finished scraping venues.")
     logger.info(f"Found {len(scraped_venues)} venues.")
     for scraped_venue in scraped_venues:
-        logger.info(scraped_venue)
         existing_venue = v.get_venue(db, source_id=scraped_venue["source_id"])
         if not existing_venue:
             logger.info(
