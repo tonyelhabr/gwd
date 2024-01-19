@@ -9,6 +9,8 @@ from sqlalchemy.orm import Session
 from app.crud import venues as v
 from app.db import schemas
 
+import datetime
+
 # from app.db.database import Base  # noqa: F401
 
 
@@ -28,7 +30,16 @@ def init_db(db: Session) -> None:
 
     venue = v.get_venue_by_name(db, name="foo")
     if not venue:
-        venue_to_create = schemas.VenueCreate(name="foo")
+        venue_to_create = schemas.VenueCreate(
+            name="foo",
+            source_id="123",
+            url="https://foo.com",
+            lat=30.266666,
+            lon=-97.733330,
+            created_at=datetime.datetime.utcnow,
+            updated_at=datetime.datetime.utcnow,
+            address="123 Main St. Austin TX",
+        )
         venue = v.create_venue(db, venue=venue_to_create)
 
 
