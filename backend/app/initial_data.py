@@ -9,8 +9,6 @@ from sqlalchemy.orm import Session
 from app.crud import venues as v
 from app.db import schemas
 
-import datetime
-
 # from app.db.database import Base  # noqa: F401
 
 
