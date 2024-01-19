@@ -22,7 +22,13 @@ def get_venues(db: Session, skip: int = 0, limit: int = 100) -> list[models.Venu
 
 
 def create_venue(db: Session, venue: schemas.VenueCreate) -> Optional[models.Venue]:
-    db_venue = models.Venue(name=venue.name)
+    db_venue = models.Venue(
+        source_id=venue.source_id,
+        name=venue.name,
+        lat=venue.lat,
+        lon=venue.lon,
+        address=venue.address,
+    )
     db.add(db_venue)
     db.commit()
     db.refresh(db_venue)
