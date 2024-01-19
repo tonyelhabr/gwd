@@ -63,7 +63,6 @@ class ScrapingService:
         soup = BeautifulSoup(self.driver.page_source, "html.parser")
         logger.info("All venues have loaded on the source page.")
         results = soup.find_all("div", class_="find__col find__col--list")
-        logger.info("Results element found.")
         data = []
         for i, result in enumerate(results):
             logger.info(f"Parsing result {i}")
@@ -85,8 +84,8 @@ class ScrapingService:
     def scrape_venues(self):
         try:
             url = self._create_venues_url()
-            logger.info("Venues URL: {url}")
-            self.driver.get(self._create_venues_url())
+            logger.info(f"Venues URL: {url}")
+            self.driver.get(url)
             self._handle_venues_popup()
             scraped_data = self._extract_venues_data()
             return scraped_data
