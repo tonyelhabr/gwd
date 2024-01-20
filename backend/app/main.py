@@ -20,7 +20,7 @@ app = FastAPI()
 
 @app.get("/")
 def read_root():
-    return "GeeksWhoDrink API"
+    return {"message": "GeeksWhoDrink API"}
 
 
 app.include_router(venues.router)
