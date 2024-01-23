@@ -16,7 +16,7 @@ router = APIRouter()
 
 
 # TODO: Add authentication
-@router.post("/api/venues/", response_model=schemas.Venue)
+@router.post("/api/venues/", response_model=schemas.Venue, status_code=201)
 def create_venue(venue: schemas.VenueCreate, db: Session = Depends(get_db)):
     db_venue = v.get_venue(db, source_id=venue.source_id)
     if db_venue:
