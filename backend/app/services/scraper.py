@@ -16,7 +16,7 @@ logger = logging.getLogger(LOGGER_NAME)
 
 class ScrapingService:
     def __init__(self):
-        self.base_url = "www.geekswhodrink.com"
+        self.base_url = "https://www.geekswhodrink.com"
         logger.info("Creating driver")
         self.driver = self.create_driver()
 
@@ -42,10 +42,7 @@ class VenueScrapingService(ScrapingService):
         super().__init__()
 
     def _create_venues_url(self):
-        path = "venues"
-        query_params = {"search": "", "location": ""}
-        encoded_params = urlencode(query_params)
-        return urlunparse(("https", self.base_url, path, "", encoded_params, ""))
+        return f"{self.base_url}/venues"
 
     def _handle_venues_popup(self):
         try:
@@ -106,7 +103,7 @@ class ResultsScrapingService(ScrapingService):
         self.venue_id = venue_id
 
     def _create_results_page_url(self, page=1):
-        url = f"{self.base_url}venues/{self.venue_id}/?pag={page}"
+        url = f"{self.base_url}/venues/{self.venue_id}/?pag={page}"
         return url
 
     def _scrape_tables_from_venue_page(self, page):
@@ -116,7 +113,9 @@ class ResultsScrapingService(ScrapingService):
                 EC.presence_of_element_located((By.CSS_SELECTOR, ".quiz__title"))
             )
         except NoSuchElementException:
-            msg = f"No quiz dates found for venue_id = {self.venue_id} on page = {page}."
+            msg = (
+                f"No quiz dates found for venue_id = {self.venue_id} on page = {page}."
+            )
             logger.error(msg)
             self.driver.quit()
             return Exception(msg)
