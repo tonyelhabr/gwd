@@ -4,14 +4,15 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from urllib.parse import urlencode, urlunparse
 import logging
 from app.extensions.logger import LOGGER_NAME
 import time
 import random
 import pandas as pd
+from io import StringIO
 
 logger = logging.getLogger(LOGGER_NAME)
+MAX_RESULTS_PAGE_TO_SCRAPE = 2
 
 
 class ScrapingService:
@@ -33,18 +34,7 @@ class ScrapingService:
         logger.info("Setting options")
         return chrome_options
 
-    def create_driver(self):
-        return webdriver.Chrome(self._set_chrome_options())
-
-
-class VenueScrapingService(ScrapingService):
-    def __init__(self):
-        super().__init__()
-
-    def _create_venues_url(self):
-        return f"{self.base_url}/venues"
-
-    def _handle_venues_popup(self):
+    def _handle_popup(self):
         try:
             popup_button = WebDriverWait(self.driver, 7).until(
                 EC.presence_of_element_located(
@@ -55,13 +45,27 @@ class VenueScrapingService(ScrapingService):
                 )
             )
             logger.info("Popup button found")
-            popup_button.click()
-            logger.info("Popup button clicked.")
+            try:
+                popup_button.click()
+                logger.info("Popup button clicked.")
+            except Exception as e:
+                logger.info("Popup button hidden on page. No button to click.")
         except NoSuchElementException:
             msg = "Popup button not found. Exiting early."
             logger.error(msg)
             self.driver.quit()
             raise Exception(msg)
+
+    def create_driver(self):
+        return webdriver.Chrome(self._set_chrome_options())
+
+
+class VenueScrapingService(ScrapingService):
+    def __init__(self):
+        super().__init__()
+
+    def _create_venues_url(self):
+        return f"{self.base_url}/venues"
 
     def _extract_venues_data(self):
         logger.info("Waiting for all venues to load on the source page.")
@@ -98,12 +102,12 @@ class VenueScrapingService(ScrapingService):
 
 
 class ResultsScrapingService(ScrapingService):
-    def __init__(self, venue_id):
+    def __init__(self, source_id):
         super().__init__()
-        self.venue_id = venue_id
+        self.source_id = source_id
 
-    def _create_results_page_url(self, page=1):
-        url = f"{self.base_url}/venues/{self.venue_id}/?pag={page}"
+    def _create_results_page_url(self, page):
+        url = f"{self.base_url}/venues/{self.source_id}/?pag={page}"
         return url
 
     def _scrape_tables_from_venue_page(self, page):
@@ -113,9 +117,7 @@ class ResultsScrapingService(ScrapingService):
                 EC.presence_of_element_located((By.CSS_SELECTOR, ".quiz__title"))
             )
         except NoSuchElementException:
-            msg = (
-                f"No quiz dates found for venue_id = {self.venue_id} on page = {page}."
-            )
+            msg = f"No quiz dates found for source_id = {self.source_id} on page = {page}."
             logger.error(msg)
             self.driver.quit()
             return Exception(msg)
@@ -130,7 +132,7 @@ class ResultsScrapingService(ScrapingService):
         tables = self.driver.find_elements(By.CSS_SELECTOR, "table")
         data_frames = []
         for table in tables:
-            df = pd.read_html(table.get_attribute("outerHTML"))[0]
+            df = pd.read_html(StringIO(table.get_attribute("outerHTML")))[0]
             if all(
                 col in df.columns for col in ["Place Ranking", "Team Name", "Score"]
             ):
@@ -145,7 +147,7 @@ class ResultsScrapingService(ScrapingService):
 
         n_tbs = len(data_frames)
         if n_tbs == 0:
-            print(f"No tables found for venue_id = {self.venue_id} on page = {page}.")
+            print(f"No tables found for source_id = {self.source_id} on page = {page}.")
         elif n_tbs != n_quiz_dates:
             print(
                 f"Number of tables ({n_tbs}) is different from number of quiz dates ({n_quiz_dates})."
@@ -153,14 +155,25 @@ class ResultsScrapingService(ScrapingService):
             if n_tbs < n_quiz_dates:
                 quiz_dates = quiz_dates[:n_tbs]
 
-        res = pd.concat(data_frames, keys=quiz_dates, names=["quiz_date"])
+        res = pd.concat(data_frames, keys=quiz_dates, names=["quiz_date"]).reset_index(
+            level=0
+        )
         return res
 
     def scrape_results(self):
         try:
-            url = self._create_results_page_url()
-            self.driver.get(url)
-            scraped_data = self._scrape_tables_from_venue_page()
-            return scraped_data
+            page = 1
+            all_tables = []
+            while page <= MAX_RESULTS_PAGE_TO_SCRAPE:
+                print(f"Scraping page {page} for venue ID {self.source_id}.")
+                url = self._create_results_page_url(page)
+                self.driver.get(url)
+                self._handle_popup()
+                tables = self._scrape_tables_from_venue_page(page)
+                page += 1
+                all_tables.append(tables)
+
+            all_results = pd.concat(all_tables)
+            return all_results
         finally:
             self.driver.quit()
