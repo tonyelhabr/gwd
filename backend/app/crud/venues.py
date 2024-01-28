@@ -1,6 +1,6 @@
 ## Reference: https://github.com/tonyelhabr/jobcrawler/blob/master/backend/jobcrawler/crud/companies.py
 from sqlalchemy.orm import Session
-from typing import Optional
+from typing import Optional, List
 from app.db import models, schemas
 from datetime import datetime
 
@@ -21,7 +21,7 @@ def get_venue_by_name(db: Session, name: str) -> Optional[models.Venue]:
 
 def get_venues(
     db: Session, skip: int = 0, limit: int = 100
-) -> Optional[list[models.Venue]]:
+) -> Optional[List[models.Venue]]:
     return db.query(models.Venue).offset(skip).limit(limit).all()
 
 

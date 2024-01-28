@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from typing import List
 from app.crud import venues as v
 from app.db import schemas
 from app.db.database import get_db
@@ -27,7 +28,7 @@ def create_venue(venue: schemas.VenueCreate, db: Session = Depends(get_db)):
     return v.create_venue(db=db, venue=venue)
 
 
-@router.get("/api/venues/", response_model=list[schemas.Venue])
+@router.get("/api/venues/", response_model=List[schemas.Venue])
 def read_venues(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     venues = v.get_venues(db=db, skip=skip, limit=limit)
     logger.info(f"Found {len(venues)} venues.")
@@ -76,7 +77,7 @@ def test_scraping_venues(db: Session = Depends(get_db)):
             v.create_venue(db, venue_to_create)
         else:
             logger.info(
-                f"Venue {existing_venue.source_id} exists in the DB, so updating it."
+                f"Venue {existing_venue['source_id']} exists in the DB, so updating it."
             )
             venue_to_update = schemas.VenueUpdate(**scraped_venue)
             v.update_venue(db, venue_to_update)

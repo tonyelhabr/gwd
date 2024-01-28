@@ -1,8 +1,8 @@
 ## Reference: https://github.com/tonyelhabr/jobcrawler/blob/master/backend/jobcrawler/crud/searches.py
 from sqlalchemy.orm import Session
-from typing import Optional
+from typing import Optional, List
 from app.db import models, schemas
-from datetime import datetime
+from datetime import datetime, date
 
 import logging
 from app.extensions.logger import LOGGER_NAME
@@ -11,19 +11,21 @@ logger = logging.getLogger(LOGGER_NAME)
 
 
 def get_result(
-    db: Session, source_id: str, limit: int = 100
-) -> Optional[list[models.Result]]:
+    db: Session, source_id: str, quiz_date: date, limit: int = 100
+) -> Optional[List[models.Result]]:
     return (
         db.query(models.Result)
-        .filter(models.Result.source_id == source_id)
+        .filter(
+            models.Result.source_id == source_id, models.Result.quiz_date == quiz_date
+        )
         .limit(limit)
         .all()
     )
 
 
-def get_results(
+def get_all_results(
     db: Session, skip: int = 0, limit: int = 100
-) -> Optional[list[models.Result]]:
+) -> Optional[List[models.Result]]:
     return db.query(models.Result).offset(skip).limit(limit).all()
 
 
@@ -44,9 +46,7 @@ def create_result(db: Session, result: schemas.ResultCreate) -> Optional[models.
     return db_result
 
 
-def update_result(
-    db: Session, result: schemas.ResultUpdate
-) -> Optional[list[models.Result]]:
+def update_result(db: Session, result: schemas.ResultUpdate) -> Optional[models.Result]:
     logger.info(f"Creating a new venue: {result.source_id}")
     db_result = (
         db.query(models.Result)
