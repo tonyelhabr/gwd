@@ -19,12 +19,14 @@ def get_venue_by_name(db: Session, name: str) -> Optional[models.Venue]:
     return db.query(models.Venue).filter(models.Venue.name == name).first()
 
 
-def get_venues(db: Session, skip: int = 0, limit: int = 100) -> list[models.Venue]:
+def get_venues(
+    db: Session, skip: int = 0, limit: int = 100
+) -> Optional[list[models.Venue]]:
     return db.query(models.Venue).offset(skip).limit(limit).all()
 
 
 def create_venue(db: Session, venue: schemas.VenueCreate) -> Optional[models.Venue]:
-    logger.info(f"Creating a new venue: {venue}")
+    logger.info(f"Creating a new venue: {venue.source_id}")
     db_venue = models.Venue(
         source_id=venue.source_id,
         name=venue.name,

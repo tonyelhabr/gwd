@@ -30,9 +30,9 @@ def read_results(skip: int = 0, limit: int = 100, db: Session = Depends(get_db))
 
 # TODO: Add authentication
 @router.post("/api/scraping/test/results/{source_id}")
-def test_scraping_results(source_id: int):
+def test_scraping_results(source_id: str, db: Session = Depends(get_db)):
     rss = ResultsScrapingService(source_id=source_id)
     logger.info("Starting to scrape results.")
-    scraped_results = rss.scrape_results()
+    scraped_results = rss.scrape_results(source_id=source_id)
     logger.info("Finished scraping results.")
     logger.info(f"Found {len(scraped_results)} results.")
