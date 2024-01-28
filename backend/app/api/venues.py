@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.crud import venues as v
 from app.db import schemas
 from app.db.database import get_db
-from app.services.scraper import ScrapingService
+from app.services.scraper import VenueScrapingService
 
 import logging
 from app.extensions.logger import LOGGER_NAME
@@ -61,9 +61,9 @@ def read_venue_by_name(name: str, db: Session = Depends(get_db)):
 # TODO: Add authentication
 @router.post("/api/scraping/test/venues")
 def test_scraping_venues(db: Session = Depends(get_db)):
-    ss = ScrapingService()
+    vss = VenueScrapingService()
     logger.info("Starting to scrape venues.")
-    scraped_venues = ss.scrape_venues()
+    scraped_venues = vss.scrape_venues()
     logger.info("Finished scraping venues.")
     logger.info(f"Found {len(scraped_venues)} venues.")
     for scraped_venue in scraped_venues:

@@ -8,6 +8,8 @@ from urllib.parse import urlencode, urlunparse
 import logging
 from app.extensions.logger import LOGGER_NAME
 import time
+import random
+import pandas as pd
 
 logger = logging.getLogger(LOGGER_NAME)
 
@@ -34,6 +36,11 @@ class ScrapingService:
     def create_driver(self):
         return webdriver.Chrome(self._set_chrome_options())
 
+
+class VenueScrapingService(ScrapingService):
+    def __init__(self):
+        super().__init__()
+
     def _create_venues_url(self):
         path = "venues"
         query_params = {"search": "", "location": ""}
@@ -54,9 +61,10 @@ class ScrapingService:
             popup_button.click()
             logger.info("Popup button clicked.")
         except NoSuchElementException:
-            logger.error("Popup button not found. Exiting early.")
+            msg = "Popup button not found. Exiting early."
+            logger.error(msg)
             self.driver.quit()
-            raise Exception("Popup button not found")
+            raise Exception(msg)
 
     def _extract_venues_data(self):
         logger.info("Waiting for all venues to load on the source page.")
@@ -87,6 +95,73 @@ class ScrapingService:
             self.driver.get(url)
             self._handle_venues_popup()
             scraped_data = self._extract_venues_data()
+            return scraped_data
+        finally:
+            self.driver.quit()
+
+
+class ResultsScrapingService(ScrapingService):
+    def __init__(self, venue_id):
+        super().__init__()
+        self.venue_id = venue_id
+
+    def _create_results_page_url(self, page=1):
+        url = f"{self.base_url}venues/{self.venue_id}/?pag={page}"
+        return url
+
+    def _scrape_tables_from_venue_page(self, page):
+        time.sleep(random.uniform(1, 2))
+        try:
+            WebDriverWait(self.driver, 3).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, ".quiz__title"))
+            )
+        except NoSuchElementException:
+            msg = f"No quiz dates found for venue_id = {self.venue_id} on page = {page}."
+            logger.error(msg)
+            self.driver.quit()
+            return Exception(msg)
+
+        quiz_dates = [
+            element.text
+            for element in self.driver.find_elements(By.CSS_SELECTOR, ".quiz__title")
+        ]
+        n_quiz_dates = len(quiz_dates)
+        time.sleep(random.uniform(1, 2))
+
+        tables = self.driver.find_elements(By.CSS_SELECTOR, "table")
+        data_frames = []
+        for table in tables:
+            df = pd.read_html(table.get_attribute("outerHTML"))[0]
+            if all(
+                col in df.columns for col in ["Place Ranking", "Team Name", "Score"]
+            ):
+                df["Place Ranking"] = pd.to_numeric(
+                    df["Place Ranking"], errors="coerce"
+                ).astype("Int64")
+                df["Team Name"] = df["Team Name"].astype(str)
+                df["Score"] = pd.to_numeric(df["Score"], errors="coerce").astype(
+                    "Int64"
+                )
+                data_frames.append(df)
+
+        n_tbs = len(data_frames)
+        if n_tbs == 0:
+            print(f"No tables found for venue_id = {self.venue_id} on page = {page}.")
+        elif n_tbs != n_quiz_dates:
+            print(
+                f"Number of tables ({n_tbs}) is different from number of quiz dates ({n_quiz_dates})."
+            )
+            if n_tbs < n_quiz_dates:
+                quiz_dates = quiz_dates[:n_tbs]
+
+        res = pd.concat(data_frames, keys=quiz_dates, names=["quiz_date"])
+        return res
+
+    def scrape_results(self):
+        try:
+            url = self._create_results_page_url()
+            self.driver.get(url)
+            scraped_data = self._scrape_tables_from_venue_page()
             return scraped_data
         finally:
             self.driver.quit()
