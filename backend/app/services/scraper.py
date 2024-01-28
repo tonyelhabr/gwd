@@ -110,6 +110,15 @@ class ResultsScrapingService(ScrapingService):
         url = f"{self.base_url}/venues/{self.source_id}/?pag={page}"
         return url
 
+    def _clean_results_df(self, df):
+        df["Place Ranking"] = pd.to_numeric(
+            df["Place Ranking"], errors="coerce"
+        ).astype("Int64")
+        df["Team Name"] = df["Team Name"].astype(str)
+        df["Score"] = pd.to_numeric(df["Score"], errors="coerce").astype("Int64")
+        df.columns = [col.replace(" ", "_").lower() for col in df.columns]
+        return df
+
     def _scrape_tables_from_venue_page(self, page):
         time.sleep(random.uniform(1, 2))
         try:
@@ -117,7 +126,9 @@ class ResultsScrapingService(ScrapingService):
                 EC.presence_of_element_located((By.CSS_SELECTOR, ".quiz__title"))
             )
         except NoSuchElementException:
-            msg = f"No quiz dates found for source_id = {self.source_id} on page = {page}."
+            msg = (
+                f"No quiz dates found for venue_id = {self.venue_id} on page = {page}."
+            )
             logger.error(msg)
             self.driver.quit()
             return Exception(msg)
@@ -136,18 +147,12 @@ class ResultsScrapingService(ScrapingService):
             if all(
                 col in df.columns for col in ["Place Ranking", "Team Name", "Score"]
             ):
-                df["Place Ranking"] = pd.to_numeric(
-                    df["Place Ranking"], errors="coerce"
-                ).astype("Int64")
-                df["Team Name"] = df["Team Name"].astype(str)
-                df["Score"] = pd.to_numeric(df["Score"], errors="coerce").astype(
-                    "Int64"
-                )
+                df = self._clean_results_df(df)
                 data_frames.append(df)
 
         n_tbs = len(data_frames)
         if n_tbs == 0:
-            print(f"No tables found for source_id = {self.source_id} on page = {page}.")
+            print(f"No tables found for venue_id = {self.venue_id} on page = {page}.")
         elif n_tbs != n_quiz_dates:
             print(
                 f"Number of tables ({n_tbs}) is different from number of quiz dates ({n_quiz_dates})."
@@ -158,6 +163,7 @@ class ResultsScrapingService(ScrapingService):
         res = pd.concat(data_frames, keys=quiz_dates, names=["quiz_date"]).reset_index(
             level=0
         )
+        res["quiz_date"] = pd.to_datetime(res["quiz_date"], format="%a, %b %d, %Y")
         return res
 
     def scrape_results(self):

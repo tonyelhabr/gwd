@@ -1,10 +1,11 @@
 from pydantic import BaseModel, Field
-from datetime import datetime
+from datetime import datetime, date
 from typing import Optional
 
 
 class ResultBase(BaseModel):
     source_id: str
+    quiz_date: date
     team_name: str
     ranking: Optional[int] = None
     score: Optional[int] = None
