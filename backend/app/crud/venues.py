@@ -1,3 +1,4 @@
+## Reference: https://github.com/tonyelhabr/jobcrawler/blob/master/backend/jobcrawler/crud/companies.py
 from sqlalchemy.orm import Session
 from typing import Optional
 from app.db import models, schemas

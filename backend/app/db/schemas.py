@@ -1,19 +1,27 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
+from typing import Optional
 
 
 class ResultBase(BaseModel):
+    source_id: str
     team_name: str
-    rank: int
+    ranking: Optional[int] = None
+    score: Optional[int] = None
+
+
+class ResultUpdate(ResultBase):
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 
 class ResultCreate(ResultBase):
-    pass
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
 
 class Result(ResultBase):
     id: int
-    venue_id: int
+    created_at: datetime
+    updated_at: datetime
 
     class Config:
         from_attributes = True

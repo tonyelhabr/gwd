@@ -29,9 +29,10 @@ class Result(Base):
     __tablename__ = "results"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    venue_id: Mapped[int] = mapped_column(Integer, ForeignKey("venues.id"))
+    source_id: Mapped[int] = mapped_column(Integer, ForeignKey("venues.source_id"))
     team_name: Mapped[str] = mapped_column(String)
-    rank: Mapped[int] = mapped_column(Integer)
+    ranking: Mapped[int] = mapped_column(Integer, nullable=True, default=False)
+    score: Mapped[int] = mapped_column(Integer, nullable=True, default=False)
     venue = relationship("Venue", back_populates="results")
 
     def __repr__(self):
