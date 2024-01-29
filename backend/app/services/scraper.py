@@ -10,6 +10,7 @@ import time
 import random
 import pandas as pd
 from io import StringIO
+from app.db.schemas import ISOWeek
 
 logger = logging.getLogger(LOGGER_NAME)
 MAX_RESULTS_PAGE_TO_SCRAPE = 2
@@ -164,6 +165,7 @@ class ResultsScrapingService(ScrapingService):
             level=0
         )
         res["quiz_date"] = pd.to_datetime(res["quiz_date"], format="%a, %b %d, %Y")
+        res["quiz_week"] = res["quiz_date"].apply(lambda x: ISOWeek.from_date(x))
         return res
 
     def scrape_results(self):

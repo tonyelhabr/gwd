@@ -1,6 +1,13 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field
 from datetime import datetime, date
 from typing import Optional
+
+
+class ISOWeek(BaseModel):
+    @classmethod
+    def from_date(cls, date: date):
+        iso_year, iso_week, _ = date.isocalendar()
+        return f"{iso_year}-W{iso_week:02d}"
 
 
 class ResultBase(BaseModel):
@@ -17,6 +24,11 @@ class ResultUpdate(ResultBase):
 
 class ResultCreate(ResultBase):
     created_at: datetime = Field(default_factory=datetime.utcnow)
+
+    @computed_field
+    @property
+    def quiz_week(self) -> str:
+        return ISOWeek.from_date(self.quiz_date)
 
 
 class Result(ResultBase):

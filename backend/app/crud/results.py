@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from typing import Optional, List
 from app.db import models, schemas
-from datetime import datetime, date
+from datetime import datetime
 
 import logging
 from app.extensions.logger import LOGGER_NAME
@@ -10,16 +10,28 @@ from app.extensions.logger import LOGGER_NAME
 logger = logging.getLogger(LOGGER_NAME)
 
 
-def get_result(
-    db: Session, source_id: str, quiz_date: date, limit: int = 100
+def get_results_for_venue(
+    db: Session, source_id: str, limit: int = 100
+) -> Optional[List[models.Result]]:
+    return (
+        db.query(models.Result)
+        .filter(models.Result.source_id == source_id)
+        .limit(limit)
+        .all()
+    )
+
+
+def get_atomic_result(
+    db: Session, source_id: str, quiz_week: str, team_name: str
 ) -> Optional[List[models.Result]]:
     return (
         db.query(models.Result)
         .filter(
-            models.Result.source_id == source_id, models.Result.quiz_date == quiz_date
+            models.Result.source_id == source_id,
+            models.Result.quiz_week == quiz_week,
+            models.Result.team_name == team_name,
         )
-        .limit(limit)
-        .all()
+        .first()
     )
 
 

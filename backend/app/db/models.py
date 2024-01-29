@@ -31,6 +31,7 @@ class Result(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     source_id: Mapped[int] = mapped_column(Integer, ForeignKey("venues.source_id"))
     quiz_date: Mapped[date] = mapped_column(Date)
+    quiz_week: Mapped[str] = mapped_column(String)
     team_name: Mapped[str] = mapped_column(String)
     ranking: Mapped[int] = mapped_column(Integer, nullable=True, default=False)
     score: Mapped[int] = mapped_column(Integer, nullable=True, default=False)
